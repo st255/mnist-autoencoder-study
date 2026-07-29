@@ -33,4 +33,6 @@ In this study first an optimal configuration for the architecture has to be foun
 
 This part of the study is based in the traditional AE architecture which's main usage is compression of the image's data. The encoder uses a convolutional architecture to simplify the training and increase the performance.
 
+`{"id": "32", "act_function": nn.SiLU, "latent_act_function": nn.Tanh, "dropout_rate": 0.0, "latent_dim": 32, "loss_function": SSIML1Loss(0.4), "lambda_l1": 1e-10, "epochs": 19},`
+
 
