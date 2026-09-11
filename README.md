@@ -34,7 +34,11 @@ This part of the study is based in the traditional AE architecture which's main 
 
 #### Activation Function:
 
+![Activation functions](/images/ae/activation_functions.png)
+
 #### Latent Activation Function:
+
+![Latent activation functions](/images/ae/latent_activation_functions.png)
 
 #### Dropout Rate:
 In this case the best result was 0.0 dropout, as we are using a RandomAffine and this acts as a regulator. Adding dropout only lowers the quality of the model.
