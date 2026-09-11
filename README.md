@@ -51,7 +51,6 @@ In this case the best result was 0.0 dropout, as we are using a RandomAffine and
 Dropout evaluation:
 ![Dropout evaluation](/images/ae/dropout.png)
 
-
 #### Latent Dimension:
 A log scale was used to search for the best quality/compression ratio, the tested values are [2, 4, 8, 16, 32, 64]. The best result appeared to be dim=32 for this case (this depends on the dataset used, and the preferences of the problem) but for this problem it didn't had a big difference to dim=64, outperformed dim=16 and mantained a low parameter count.
 
@@ -63,11 +62,11 @@ The following loss functions were tested:
 - SSIM
 - SSIM + L1
 
-The optimal solution appeared to be SSIM + L1 loss
+The optimal solution appeared to be SSIM + L1 loss. The combination of structural similarity (SSIM) and pixel precision (L1) gave the best results as loss function. The optimal results used ```alpha=0.4``` (L1 * 04 + SSIM * 06).
 
 ![Loss functions](/images/ae/loss_functions.png)
 
-### L1 Regularization
+#### L1 Regularization
 In this part of the study L1 regularization isn't needed so a low value was set (1e-10).
 
 `{"id": "32", "act_function": nn.SiLU, "latent_act_function": nn.Tanh, "dropout_rate": 0.0, "latent_dim": 32, "loss_function": SSIML1Loss(0.4), "lambda_l1": 1e-10, "epochs": 19},`
