@@ -69,6 +69,8 @@ The optimal solution appeared to be SSIM + L1 loss. The combination of structura
 #### L1 Regularization
 In this part of the study L1 regularization isn't needed so a low value was set (1e-10).
 
-`{"id": "32", "act_function": nn.SiLU, "latent_act_function": nn.Tanh, "dropout_rate": 0.0, "latent_dim": 32, "loss_function": SSIML1Loss(0.4), "lambda_l1": 1e-10, "epochs": 19},`
+#### Optimal Configuration
+
+`{"id": "Optimal", "act_function": nn.SiLU, "latent_act_function": nn.Tanh, "dropout_rate": 0.0, "latent_dim": 32, "loss_function": SSIML1Loss(0.4), "lambda_l1": 1e-10, "epochs": 19},`
 
 
