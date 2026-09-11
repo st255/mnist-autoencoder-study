@@ -63,6 +63,8 @@ The following loss functions were tested:
 - SSIM
 - SSIM + L1
 
+The optimal solution appeared to be SSIM + L1 loss
+
 ![Loss functions](/images/ae/loss_functions.png)
 
 ### L1 Regularization
