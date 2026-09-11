@@ -16,7 +16,7 @@ transforms.RandomAffine(
 
 In this study first an optimal configuration for the architecture has to be found and analysed. This is made via experimentation with `autoencoder_training_lab.ipynb`, which is especially designed to simplify and automate this task. Once found an optimal configuration and having checked the statistics of the resulting model, it can be benchmarked.
 
-To ensure the reliability of the results each parameter was tested with three different loss functions (MSE, L1 and SSIM) and the losses are averaged over 10 trainings to reduce variation. It is important to keep in mind that L1 and SSIM both offer far better results than MSE in image reconstruction.
+To ensure the reliability of the results, each parameter was tested with three different loss functions (MSE, L1 and SSIM) and the losses are averaged over 10 trainings to reduce variation. It is important to keep in mind that L1 and SSIM both offer far better results than MSE in image reconstruction.
 
 
 ## Parts Of The Study
