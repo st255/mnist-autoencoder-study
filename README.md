@@ -39,6 +39,9 @@ This part of the study is based in the traditional AE architecture which's main 
 #### Dropout Rate:
 In this case the best result was 0.0 dropout, as we are using a RandomAffine and this acts as a regulator. Adding dropout only lowers the quality of the model.
 
+![Dropout evaluation](/images/ae/dropout.png)
+![Dropout losses while training](/images/ae/dropout_training.png)
+
 #### Latent Dimension:
 A log scale was used to search for the best quality/compression ratio, the tested values are [2, 4, 8, 16, 32, 64]. The best result appeared to be dim=32 for this case (this depends on the dataset used, and the preferences of the problem) but for this problem it didn't had a big difference to dim=64, outperformed dim=16 and mantained a low parameter count.
 
