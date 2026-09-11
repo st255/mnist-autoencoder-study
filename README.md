@@ -73,4 +73,19 @@ In this part of the study L1 regularization isn't needed so a low value was set 
 
 `{"id": "Optimal", "act_function": nn.SiLU, "latent_act_function": nn.Tanh, "dropout_rate": 0.0, "latent_dim": 32, "loss_function": SSIML1Loss(0.4), "lambda_l1": 1e-10, "epochs": 19},`
 
+- Original image size: 28 $\times$ 28 = 784
+- Latent vector size: 32
+- Compression ratio: $\frac{784}{32}$ = 24.5
+- Reduction: (1 - $\frac{32}{784}$) $\times$ 100 $\approx$ 95.92%
+
+Reconstructed images using the optimal configuration:
+
+![Reconstructed images](/images/ae/reconstructed.png)
+
+UMAP proyection of the latent space:
+
+![UMAP proyection](/images/ae/umap.png)
+
+
+
 
