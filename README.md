@@ -14,7 +14,7 @@ transforms.RandomAffine(
 )
 ```
 
-In this study first an optimal configuration for the architecture has to be found and analysed. This is made via experimentation with `autoencoder_training_lab.ipynb`, which is especially designed to simplify and automate this task. Once found an optimal configuration and having checked the statistics of the resulting model, it can be benchmarked.
+In this study first an optimal configuration for the architecture has to be found and analysed. This is made via experimentation with `autoencoder_training_lab.ipynb`, which is especially designed to simplify and automate this task. Once found an optimal configuration and having checked the statistics of the resulting model, it can be benchmarked. To ensure the reliability of the results each parameter was tested with three different loss functions (MSE, L1 and SSIM) and the losses are averaged over 10 trainings to reduce variation. It is important to keep in mind that L1 and SSIM both offer far better results than MSE in image reconstruction.
 
 
 ## Parts Of The Study
@@ -33,6 +33,7 @@ In this study first an optimal configuration for the architecture has to be foun
 This part of the study is based in the traditional AE architecture which's main usage is compression of the image's data. The encoder uses a convolutional architecture to simplify the training and increase the performance.
 
 #### Activation Function:
+Three different activation functions were tested: ReLU, Leaky ReLU and SiLU. As expected, SiLU gave the best results because of its smoother curve and the capacity to mantain negative numbers.
 
 ![Activation functions](/images/ae/activation_functions.png)
 
@@ -45,7 +46,7 @@ In this case the best result was 0.0 dropout, as we are using a RandomAffine and
 
 ![Dropout losses while training](/images/ae/dropout_training.png)
 
-Dropout evaluation using three different loss functions:
+Dropout evaluation:
 ![Dropout evaluation](/images/ae/dropout.png)
 
 
