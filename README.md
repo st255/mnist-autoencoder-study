@@ -68,7 +68,7 @@ The optimal solution appeared to be SSIM + L1 loss. The combination of structura
 
 #### Optimal Configuration
 
-`{"id": "Optimal", "act_function": nn.SiLU, "latent_act_function": nn.Tanh, "dropout_rate": 0.0, "latent_dim": 32, "loss_function": SSIML1Loss(0.4), "lambda_l1": 1e-10, "epochs": 19},`
+`{"id": "Optimal", "act_function": nn.SiLU, "latent_act_function": nn.Tanh, "dropout_rate": 0.0, "latent_dim": 32, "loss_function": SSIML1Loss(0.4), "epochs": 19},`
 
 - Original image size: 28 $\times$ 28 = 784
 - Latent vector size: 32
