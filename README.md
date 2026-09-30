@@ -96,7 +96,7 @@ UMAP proyection of the latent space:
 
 ## Sparse Autoencoder (SAE)
 
-This part of the study differs hardly from the previous one in both the objetive of the model and the aproach taken. A SAE doesn't persue to compress the information into a reduced latent space, instead it's intention is to process the information into a larger latent space so it can recognise individual characteristics. The same convolutional architecture of the previous experiment, as well as some of the optimal results seen, are used in this section.
+This part of the study differs hardly from the previous one in both the objetive of the model and the approach taken. A SAE doesn't persue to compress the information into a reduced latent space, instead it's intention is to project the information into a larger latent space so it can recognise individual characteristics. The same convolutional architecture of the previous experiment, as well as some of the optimal results seen, are used in this section.
 
 #### Fixed parameters:
 
@@ -124,3 +124,5 @@ There are many ways to force the sparsity in a AE, the more popular ones are:
 - ReLU/Jump ReLU
 
 For this project I have choosen Top-K + ReLU, I have tried L1 too but it didn't force a correct sparsity and tended to lower all the neurons at once. Top-K is much better by forcing only K neurons to be active, but it's important to keep track of <ins>**dead neurons**</ins>.
+
+
