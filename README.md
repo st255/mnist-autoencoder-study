@@ -1,5 +1,5 @@
 # MNIST Autoencoder Study
----
+
 #### Disclaimer
 This project was developed as a learning and research exercise to understand better how neural networks work. Feel free to use the code as you wish.
 
@@ -66,9 +66,19 @@ The optimal solution appeared to be SSIM + L1 loss. The combination of structura
 
 ![Loss functions](/images/ae/loss_functions.png)
 
-#### Optimal Configuration
+#### Optimal Configuration:
 
-`{"id": "Optimal", "act_function": nn.SiLU, "latent_act_function": nn.Tanh, "dropout_rate": 0.0, "latent_dim": 32, "loss_function": SSIML1Loss(0.4), "epochs": 19},`
+```python
+{
+    "id": "Optimal",
+    "act_function": nn.SiLU,
+    "latent_act_function": nn.Tanh,
+    "dropout_rate": 0.0,
+    "latent_dim": 32,
+    "loss_function": SSIML1Loss(0.4),
+    "epochs": 19
+}
+```
 
 - Original image size: 28 $\times$ 28 = 784
 - Latent vector size: 32
@@ -84,5 +94,33 @@ UMAP proyection of the latent space:
 ![UMAP proyection](/images/ae/umap.png)
 
 
+## Sparse Autoencoder (SAE)
+
+This part of the study differs hardly from the previous one in both the objetive of the model and the aproach taken. A SAE doesn't persue to compress the information into a reduced latent space, instead it's intention is to process the information into a larger latent space so it can recognise individual characteristics. The same convolutional architecture of the previous experiment, as well as some of the optimal results seen, are used in this section.
+
+#### Fixed parameters:
+
+The following configurations are mantained from the previous results as the SAE does not require changes and this parameters have shown to be optimal for this architecture.
+
+```python
+{
+    "act_function": nn.SiLU,
+    "dropout_rate": 0.0,
+    "loss_function": SSIML1Loss(0.4),
+    "epochs": 19
+}
+```
+
+#### Latent Activation Function:
+
+In a SAE we need to force sparsity, this means turning off many of the avaliable neurons. Because of this, we need to use `nn.ReLU` as the latent activation function so the negative neurons get turned off.
 
 
+#### Top-k And Latent Dimension
+There are many ways to force the sparsity in a AE, the more popular ones are:
+- L1 Reguralization
+- KL divergence
+- Top-K
+- ReLU/Jump ReLU
+
+For this project I have choosen Top-K + ReLU, I have tried L1 too but it didn't force a correct sparsity and tended to lower all the neurons at once. Top-K is much better by forcing only K neurons to be active, but it's important to keep track of <ins>**dead neurons**</ins>.
