@@ -123,6 +123,18 @@ There are many ways to force the sparsity in a AE, the more popular ones are:
 - Top-K
 - ReLU/Jump ReLU
 
-For this project I have choosen Top-K + ReLU, I have tried L1 too but it didn't force a correct sparsity and tended to lower all the neurons at once. Top-K is much better by forcing only K neurons to be active, but it's important to keep track of <ins>**dead neurons**</ins>.
+For this project I have choosen Top-K + ReLU, I have tried L1 too but it didn't force a correct sparsity and tended to lower all the neurons at once. On the other hand Top-K offers a good control over the number of characteristics and forces great sparsity.
 
 
+Top-K work's by forcing only the k neurons with greater activation values to stay active. This method requires to use ReLU as negatives values can become ambiguous in both training and analysis. This approach only has a remarcable issue, <ins>**dead neurons**</ins>. Top-K turns off neurons, reducing their gradients to 0, which added to ReLU can cause heavy troubles. It's very important to select appropiate values for both k and the latent dimension.
+
+Objectives:
+- K: as low as posible, low k forces sparsity and disentanglement in the latent space.
+- Latent dimension: as high as posible, higher dimensions offer finer characteristics. 
+
+Limitations:
+- K value
+    - The lower it goes the lower the quality of the reconstruction
+    - If it's not consistent with the latent dimension it can explode the number of death neurons.
+- Latent dimension:
+    - There's a point from where more dimension doesn't mean a great impact in reconstruction quality (but it greatly reduces performance).
