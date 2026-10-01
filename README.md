@@ -96,7 +96,7 @@ UMAP proyection of the latent space:
 
 ## Sparse Autoencoder (SAE)
 
-This part of the study differs hardly from the previous one in both the objetive of the model and the approach taken. A SAE doesn't persue to compress the information into a reduced latent space, instead it's intention is to project the information into a larger latent space so it can recognise individual characteristics. The same convolutional architecture of the previous experiment, as well as some of the optimal results seen, are used in this section.
+This part of the study differs significantly from the previous one in both the objetive of the model and the approach taken. A SAE doesn't persue to compress the information into a reduced latent space, instead it's intention is to project the information into a larger latent space so it can recognise individual characteristics. The same convolutional architecture of the previous experiment, as well as some of the optimal results seen, are used in this section.
 
 #### Fixed parameters:
 
@@ -116,20 +116,20 @@ The following configurations are mantained from the previous results as the SAE 
 In a SAE we need to force sparsity, this means turning off many of the avaliable neurons. Because of this, we need to use `nn.ReLU` as the latent activation function so the negative neurons get turned off.
 
 
-#### Top-k And Latent Dimension
+#### Top-k And Latent Dimension (Sparsity):
 There are many ways to force the sparsity in a AE, the more popular ones are:
 - L1 Reguralization
 - KL divergence
 - Top-K
 - ReLU/Jump ReLU
 
-For this project I have choosen Top-K + ReLU, I have tried L1 too but it didn't force a correct sparsity and tended to lower all the neurons at once. On the other hand Top-K offers a good control over the number of characteristics and forces great sparsity.
+For this project I have choosen Top-K + ReLU, I have tried L1 too but it didn't force a correct sparsity and tended to reduce all neurons at once. On the other hand Top-K offers a good control over the number of characteristics and creates great sparsity.
 
 
-Top-K work's by forcing only the k neurons with greater activation values to stay active. This method requires to use ReLU as negatives values can become ambiguous in both training and analysis. This approach only has a remarcable issue, <ins>**dead neurons**</ins>. Top-K turns off neurons, reducing their gradients to 0, which added to ReLU can cause heavy troubles. It's very important to select appropiate values for both k and the latent dimension.
+Top-K work's by forcing only the k neurons with greater activation values to stay active. This method requires to use ReLU as negatives values can become ambiguous in both training and analysis. This approach only has a remarcable issue, <ins>**dead neurons**</ins>. Top-K turns off neurons, reducing their gradients to 0, which added to ReLU can cause heavy issues. It's very important to select appropiate values for both k and the latent dimension.
 
 Objectives:
-- K: as low as posible, low k forces sparsity and disentanglement in the latent space.
+- K value: as low as posible, low k forces sparsity and disentanglement in the latent space.
 - Latent dimension: as high as posible, higher dimensions offer finer characteristics. 
 
 Limitations:
