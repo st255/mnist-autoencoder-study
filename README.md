@@ -37,19 +37,28 @@ This part of the study is based in the traditional AE architecture which's main 
 #### Activation Function:
 Three different activation functions were tested: ReLU, Leaky ReLU and SiLU. As expected, SiLU gave the best results because of its smoother curve and the capacity to mantain negative numbers.
 
-![Activation functions](/images/ae/activation_functions.png)
+<p align="center">
+    <img src="/images/ae/activation_functions.png" width="800" height="600">
+</p>
 
 #### Latent Activation Function:
 
-![Latent activation functions](/images/ae/latent_activation_functions.png)
+<p align="center">
+    <img src="/images/ae/latent_activation_functions.png" width="800" height="600">
+</p>
 
 #### Dropout Rate:
 In this case the best result was 0.0 dropout, as we are using a RandomAffine and this acts as a regulator. Adding dropout only lowers the quality of the model.
 
-![Dropout losses while training](/images/ae/dropout_training.png)
+<p align="center">
+    <img src="/images/ae/dropout_training.png" width="800" height="600">
+</p>
 
 Dropout evaluation:
-![Dropout evaluation](/images/ae/dropout.png)
+
+<p align="center">
+    <img src="/images/ae/dropout.png" width="800" height="600">
+</p>
 
 #### Latent Dimension:
 A log scale was used to search for the best quality/compression ratio, the tested values are [2, 4, 8, 16, 32, 64]. The best result appeared to be dim=32 for this case (this depends on the dataset used, and the preferences of the problem) but for this problem it didn't had a big difference to dim=64, outperformed dim=16 and mantained a low parameter count.
@@ -64,7 +73,9 @@ The following loss functions were tested:
 
 The optimal solution appeared to be SSIM + L1 loss. The combination of structural similarity (SSIM) and pixel precision (L1) gave the best results as loss function. The optimal results used ```alpha=0.4``` (L1 * 04 + SSIM * 06).
 
-![Loss functions](/images/ae/loss_functions.png)
+<p align="center">
+    <img src="/images/ae/loss_functions.png" width="800" height="600">
+</p>
 
 #### Optimal Configuration:
 
@@ -87,12 +98,15 @@ The optimal solution appeared to be SSIM + L1 loss. The combination of structura
 
 Reconstructed images using the optimal configuration:
 
-![Reconstructed images](/images/ae/reconstructed.png)
+<p align="center">
+    <img src="/images/ae/reconstructed.png" width="800" height="600">
+</p>
 
 UMAP proyection of the latent space:
 
-![UMAP proyection](/images/ae/umap.png)
-
+<p align="center">
+    <img src="/images/ae/umap.png" width="600" height="600">
+</p>
 
 ## Sparse Autoencoder (SAE)
 
@@ -141,14 +155,19 @@ Limitations:
 
 To start discarding configurations a width spectrum test is started:
 
-![Train losses 1024-4096](/images/sae/train_losses/train_losses_1024-4096.png)
-![Losses 1024-4096](/images/sae/losses_1024-4096.png)
+<p align="center">
+    <img src="/images/sae/train_losses/train_losses_1024-4096.png" width="600" height="400">
+    <img src="/images/sae/losses_1024-4096.png" width="600" height="400">
+</p>
+
 
 With this results it is obvious that k=16 and dim=4096 can be easily descarded. We can extract some early conclusions from this results, it appears that the MNIST dataset (with our custom transform applied) need a minimun of 32-64 individual characteristics to be correctly reconstructed. It also appears that dim=2048 hits the peak of feature extracting, adding more dimensions have shown not only to not increase the quality but worse it. This can happen for many reasons but the main one is that the features become such fine and abstract that the number of neurons needed to reconstruct a digit explodes.
 
 Then, some more specific tests are run to explore the greatest configurations:
 
-![Train losses 1024-4096](/images/sae/train_losses/train_losses_1024-2048.png)
-![Losses 1024-4096](/images/sae/losses_1024-2048.png)
-![Dead neurons k=32](/images/sae/dead_neurons/dead_neurons_k=32.png)
-![Dead neurons k=64](/images/sae/dead_neurons/dead_neurons_k=64.png)
+<p align="center">
+    <img src="/images/sae/train_losses/train_losses_1024-2048.png" width="800" height="600">
+    <img src="/images/sae/losses_1024-2048.png" width="800" height="600">
+    <img src="/images/sae/dead_neurons/dead_neurons_k=32.png" width="400" height="200">
+    <img src="/images/sae/dead_neurons/dead_neurons_k=64.png" width="400" height="200">
+</p>
