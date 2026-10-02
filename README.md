@@ -141,11 +141,14 @@ Limitations:
 
 To start discarding configurations a width spectrum test is started:
 
-![Train losses 1024-4096](/images/sae/train_losses_1024-4096.png)
+![Train losses 1024-4096](/images/sae/train_losses/train_losses_1024-4096.png)
 ![Losses 1024-4096](/images/sae/losses_1024-4096.png)
 
 With this results it is obvious that k=16 and dim=4096 can be easily descarded. We can extract some early conclusions from this results, it appears that the MNIST dataset (with our custom transform applied) need a minimun of 32-64 individual characteristics to be correctly reconstructed. It also appears that dim=2048 hits the peak of feature extracting, adding more dimensions have shown not only to not increase the quality but worse it. This can happen for many reasons but the main one is that the features become such fine and abstract that the number of neurons needed to reconstruct a digit explodes.
 
-Then, a more specific test it's run to explore the greates configurations:
-![Train losses 1024-4096](/images/sae/train_losses_1024-2048.png)
+Then, some more specific tests are run to explore the greatest configurations:
+
+![Train losses 1024-4096](/images/sae/train_losses/train_losses_1024-2048.png)
 ![Losses 1024-4096](/images/sae/losses_1024-2048.png)
+![Dead neurons k=32](/images/sae/dead_neurons/dead_neurons_k=32.png)
+![Dead neurons k=64](/images/sae/dead_neurons/dead_neurons_k=64.png)
