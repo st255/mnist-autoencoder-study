@@ -38,26 +38,26 @@ This part of the study is based in the traditional AE architecture which's main 
 Three different activation functions were tested: ReLU, Leaky ReLU and SiLU. As expected, SiLU gave the best results because of its smoother curve and the capacity to mantain negative numbers.
 
 <p align="center">
-    <img src="/images/ae/activation_functions.png" width="800" height="600">
+    <img src="/images/ae/activation_functions.png" width="800">
 </p>
 
 #### Latent Activation Function:
 
 <p align="center">
-    <img src="/images/ae/latent_activation_functions.png" width="800" height="600">
+    <img src="/images/ae/latent_activation_functions.png" width="800">
 </p>
 
 #### Dropout Rate:
 In this case the best result was 0.0 dropout, as we are using a RandomAffine and this acts as a regulator. Adding dropout only lowers the quality of the model.
 
 <p align="center">
-    <img src="/images/ae/dropout_training.png" width="800" height="600">
+    <img src="/images/ae/dropout_training.png" width="800">
 </p>
 
 Dropout evaluation:
 
 <p align="center">
-    <img src="/images/ae/dropout.png" width="800" height="600">
+    <img src="/images/ae/dropout.png" width="800">
 </p>
 
 #### Latent Dimension:
@@ -74,7 +74,7 @@ The following loss functions were tested:
 The optimal solution appeared to be SSIM + L1 loss. The combination of structural similarity (SSIM) and pixel precision (L1) gave the best results as loss function. The optimal results used ```alpha=0.4``` (L1 * 04 + SSIM * 06).
 
 <p align="center">
-    <img src="/images/ae/loss_functions.png" width="800" height="600">
+    <img src="/images/ae/loss_functions.png" width="800">
 </p>
 
 #### Optimal Configuration:
@@ -99,18 +99,25 @@ The optimal solution appeared to be SSIM + L1 loss. The combination of structura
 Reconstructed images using the optimal configuration:
 
 <p align="center">
-    <img src="/images/ae/reconstructed.png" width="800" height="600">
+    <img src="/images/ae/reconstructed.png" width="800">
 </p>
 
 UMAP proyection of the latent space:
 
 <p align="center">
-    <img src="/images/ae/umap.png" width="600" height="600">
+    <img src="/images/ae/umap.png" width="600">
 </p>
 
 ## Sparse Autoencoder (SAE)
 
 This part of the study differs significantly from the previous one in both the objetive of the model and the approach taken. A SAE doesn't persue to compress the information into a reduced latent space, instead it's intention is to project the information into a larger latent space so it can recognise individual characteristics. The same convolutional architecture of the previous experiment, as well as some of the optimal results seen, are used in this section.
+
+To avoid dead neurons (common in this architecture) we will add some of the complete reconstruction loss to the sparse one. This method is commonly used to avoid gradient inactivity. 
+
+```python
+loss = criterion(reconstructed_topk, images) + t * criterion(reconstructed_dense, images)
+```
+
 
 #### Fixed parameters:
 
@@ -156,8 +163,8 @@ Limitations:
 To start discarding configurations a width spectrum test is started:
 
 <p align="center">
-    <img src="/images/sae/train_losses/train_losses_1024-4096.png" width="800" height="600">
-    <img src="/images/sae/losses_1024-4096.png" width="800" height="600">
+    <img src="/images/sae/train_losses/train_losses_1024-4096.png" width="800">
+    <img src="/images/sae/losses_1024-4096.png" width="800">
 </p>
 
 
@@ -166,8 +173,33 @@ With this results it is obvious that k=16 and dim=4096 can be easily descarded. 
 Then, some more specific tests are run to explore the greatest configurations:
 
 <p align="center">
-    <img src="/images/sae/train_losses/train_losses_1024-2048.png" width="800" height="600">
-    <img src="/images/sae/losses_1024-2048.png" width="800" height="600">
-    <img src="/images/sae/dead_neurons/dead_neurons_k=32.png" width="410" height="350">
-    <img src="/images/sae/dead_neurons/dead_neurons_k=64.png" width="410" height="350">
+    <img src="/images/sae/train_losses/train_losses_1024-2048.png" width="800">
+    <img src="/images/sae/losses_1024-2048.png" width="800">
+    <img src="/images/sae/dead_neurons/dead_neurons_k=32.png" width="410">
+    <img src="/images/sae/dead_neurons/dead_neurons_k=64.png" width="410">
+</p>
+
+A normal dead neurons rate it's between 4-6% in SAE architectures, the only architecture which mantains a low error and keeps the dead neurons count low is the combination `{k=32, dim=1024}`.
+
+#### Dead Neurons:
+As said at the start of the section, to control the dead neuron count a fraction of the normal reconstruction loss is added to the sparse one. This adding is controled by a parammeter `t` which default value has been `t=0.15`. A test to itter the `0.05`, `0.1`,  `0.2` values will be run to study the optimal value.
+
+<p align="center">
+  <b>t = 0.05</b><br>
+  <img src="/images/sae/dead_neurons/0.05-dead-neurons.png" width="600">
+</p>
+
+<p align="center">
+  <b>t = 0.10</b><br>
+  <img src="/images/sae/dead_neurons/0.1-dead-neurons.png" width="600">
+</p>
+
+<p align="center">
+  <b>t = 0.15</b><br>
+  <img src="/images/sae/dead_neurons/0.15-dead-neurons.png" width="600">
+</p>
+
+<p align="center">
+  <b>t = 0.20</b><br>
+  <img src="/images/sae/dead_neurons/0.2-dead-neurons.png" width="600">
 </p>
