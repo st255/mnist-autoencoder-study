@@ -168,6 +168,6 @@ Then, some more specific tests are run to explore the greatest configurations:
 <p align="center">
     <img src="/images/sae/train_losses/train_losses_1024-2048.png" width="800" height="600">
     <img src="/images/sae/losses_1024-2048.png" width="800" height="600">
-    <img src="/images/sae/dead_neurons/dead_neurons_k=32.png" width="450" height="350">
-    <img src="/images/sae/dead_neurons/dead_neurons_k=64.png" width="450" height="350">
+    <img src="/images/sae/dead_neurons/dead_neurons_k=32.png" width="420" height="350">
+    <img src="/images/sae/dead_neurons/dead_neurons_k=64.png" width="420" height="350">
 </p>
