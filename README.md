@@ -156,8 +156,8 @@ Limitations:
 To start discarding configurations a width spectrum test is started:
 
 <p align="center">
-    <img src="/images/sae/train_losses/train_losses_1024-4096.png" width="600" height="400">
-    <img src="/images/sae/losses_1024-4096.png" width="600" height="400">
+    <img src="/images/sae/train_losses/train_losses_1024-4096.png" width="800" height="600">
+    <img src="/images/sae/losses_1024-4096.png" width="800" height="600">
 </p>
 
 
