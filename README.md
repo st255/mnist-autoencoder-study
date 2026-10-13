@@ -203,3 +203,6 @@ As said at the start of the section, to control the dead neuron count a fraction
   <b>t = 0.20</b><br>
   <img src="/images/sae/dead_neurons/0.2-dead-neurons.png" width="600">
 </p>
+
+
+Its easy to see that `t=0.15` is mantained as the best relation between dead neurons and model performance. It offers good reconstruction value with a normal dead neuron rate (3-6%). `t>=0.2` offers a better dead neuron rate, but in exchange of too much reconstruction quality.
