@@ -1,10 +1,11 @@
 # MNIST Autoencoder Study
 
-#### Disclaimer
-This project was developed as a learning and research exercise to understand better how neural networks work. Feel free to use the code as you wish.
+> **Disclaimer:** This project was developed as a learning and research exercise to better understand neural network representations and autoencoder architectures. Feel free to use or modify the code.
 
 ## Introduction
-This study is designed to search the best configurations for a set of AE architectures in the MNIST dataset. In order to add some difficulty, a transform will be applied to the whole dataset which will change the rotation, translation and scale of the images:
+
+This study explores optimal hyperparameter and architectural configurations for various Autoencoder (AE) models trained on the MNIST dataset. To increase difficulty and test model robustness, spatial transformations are applied across the entire dataset:
+
 ```python
 transforms.RandomAffine(
     degrees=10,
@@ -14,70 +15,69 @@ transforms.RandomAffine(
 )
 ```
 
-In this study first an optimal configuration for the architecture has to be found and analysed. This is made via experimentation with `autoencoder_training_lab.ipynb`, which is especially designed to simplify and automate this task. Once found an optimal configuration and having checked the statistics of the resulting model, it can be benchmarked.
+Experiments are conducted using different pipelines, which automates training runs and parameter sweeps. To ensure statistical reliability, each parameter was tested with three distinct loss functions (MSE, L1, and SSIM) and averaged over 10 training runs. Note that L1 and SSIM offer superior image reconstruction compared to MSE.
 
-To ensure the reliability of the results, each parameter was tested with three different loss functions (MSE, L1 and SSIM) and the losses were averaged over 10 trainings to reduce variation. It is important to keep in mind that L1 and SSIM both offer far better results than MSE in image reconstruction.
+---
 
+## Study Progress
 
-## Parts Of The Study
+- [x] **Traditional Autoencoder** (Image compression)
+- [x] **Sparse Autoencoder** (Feature extraction)
+- [ ] **Variational Autoencoder** (Image generation)
+- [ ] **Denoising Autoencoder** (Image restoration / modification)
 
-- [x] Traditional autoencoder (image compresion).
-- [ ] Sparse autoencoder (feature extraction).
-- [ ] Variatonal autoencoder (image generation).
-- [ ] Denoising Autoencoder (image modifying).
+### Roadmap & TODO
+- [ ] Implement VGG / Perceptual Loss
+- [ ] Clean and unify code repository
 
-## TODO
-- [ ] VGG Loss
-- [ ] Clean and unify code
+---
 
 ## Traditional Autoencoder
 
-This part of the study is based in the traditional AE architecture which's main usage is compression of the image's data. The encoder uses a convolutional architecture to simplify the training and increase the performance.
+This section evaluates standard convolutional autoencoder architectures designed primarily for image compression and dimensionality reduction.
 
-#### Activation Function:
-Three different activation functions were tested: ReLU, Leaky ReLU and SiLU. As expected, SiLU gave the best results because of its smoother curve and the capacity to mantain negative numbers.
-
-<p align="center">
-    <img src="/images/ae/activation_functions.png" width="800">
-</p>
-
-#### Latent Activation Function:
+### Activation Functions
+Three activation functions were evaluated: ReLU, Leaky ReLU, and SiLU. SiLU achieved the best results due to its smooth non-monotonic curve and ability to preserve small negative activations.
 
 <p align="center">
-    <img src="/images/ae/latent_activation_functions.png" width="800">
+  <img src="images/ae/activation_functions.png" width="800" alt="Activation Functions Comparison">
 </p>
 
-#### Dropout Rate:
-In this case the best result was 0.0 dropout, as we are using a RandomAffine and this acts as a regulator. Adding dropout only lowers the quality of the model.
+### Latent Activation Functions
+<p align="center">
+  <img src="images/ae/latent_activation_functions.png" width="800" alt="Latent Activation Functions">
+</p>
+
+### Dropout Rate
+The optimal dropout rate was **0.0**. Because `RandomAffine` data augmentation acts as a regularizer, adding dropout reduced overall reconstruction quality.
 
 <p align="center">
-    <img src="/images/ae/dropout_training.png" width="800">
+  <img src="images/ae/dropout_training.png" width="800" alt="Dropout Training Curves">
 </p>
 
-Dropout evaluation:
+Dropout evaluation comparison:
 
 <p align="center">
-    <img src="/images/ae/dropout.png" width="800">
+  <img src="images/ae/dropout.png" width="800" alt="Dropout Evaluation">
 </p>
 
-#### Latent Dimension:
-A log scale was used to search for the best quality/compression ratio, the tested values are [2, 4, 8, 16, 32, 64]. The best result appeared to be dim=32 for this case (this depends on the dataset used, and the preferences of the problem) but for this problem it didn't had a big difference to dim=64, outperformed dim=16 and mantained a low parameter count.
+### Latent Dimension
+A logarithmic scale was tested to find the optimal compression-to-quality ratio: `[2, 4, 8, 16, 32, 64]`. A dimension of **32** yielded the best trade-off—performing almost identically to 64 while substantially outperforming 16 and maintaining a low parameter count.
 
-#### Loss Function:
-The following loss functions were tested:
-
+### Loss Function
+The following reconstruction loss functions were benchmarked:
 - MSE
 - L1
 - SSIM
 - SSIM + L1
 
-The optimal solution appeared to be SSIM + L1 loss. The combination of structural similarity (SSIM) and pixel precision (L1) gave the best results as loss function. The optimal results used ```alpha=0.4``` (L1 * 04 + SSIM * 06).
+The combination of **SSIM + L1 Loss** yielded the best performance by balancing structural similarity (SSIM) with pixel precision (L1). The optimal configuration used $\alpha = 0.4$ ($0.4 \times \text{L1} + 0.6 \times \text{SSIM}$).
 
 <p align="center">
-    <img src="/images/ae/loss_functions.png" width="800">
+  <img src="images/ae/loss_functions.png" width="800" alt="Loss Functions Comparison">
 </p>
 
-#### Optimal Configuration:
+### Optimal Configuration
 
 ```python
 {
@@ -86,128 +86,119 @@ The optimal solution appeared to be SSIM + L1 loss. The combination of structura
     "latent_act_function": nn.Tanh,
     "dropout_rate": 0.0,
     "latent_dim": 32,
-    "loss_function": SSIML1Loss(0.4),
+    "loss_function": SSIML1Loss(alpha=0.4),
     "epochs": 19
 }
 ```
 
-- Original image size: 28 $\times$ 28 = 784
-- Latent vector size: 32
-- Compression ratio: $\frac{784}{32}$ = 24.5
-- Reduction: (1 - $\frac{32}{784}$) $\times$ 100 $\approx$ 95.92%
+- **Original image size:** $28 \times 28 = 784$
+- **Latent vector size:** 32
+- **Compression ratio:** $\frac{784}{32} = 24.5
+- **Dimensionality reduction:** $\left(1 - \frac{32}{784}\right) \times 100 \approx 95.92\%$
 
-Reconstructed images using the optimal configuration:
-
-<p align="center">
-    <img src="/images/ae/reconstructed.png" width="800">
-</p>
-
-UMAP proyection of the latent space:
+#### Reconstruction Results
+Reconstructed images generated by the optimal configuration:
 
 <p align="center">
-    <img src="/images/ae/umap.png" width="600">
+  <img src="images/ae/reconstructed.png" width="800" alt="Reconstructed Images">
 </p>
+
+#### Latent Space Projection
+UMAP projection of the learned latent space:
+
+<p align="center">
+  <img src="images/ae/umap.png" width="600" alt="UMAP Projection">
+</p>
+
+---
 
 ## Sparse Autoencoder (SAE)
 
-This part of the study differs significantly from the previous one in both the objetive of the model and the approach taken. A SAE doesn't persue to compress the information into a reduced latent space, instead it's intention is to project the information into a larger latent space so it can recognise individual characteristics. The same convolutional architecture of the previous experiment, as well as some of the optimal results seen, are used in this section.
+Unlike compression autoencoders, a Sparse Autoencoder (SAE) projects information into a higher-dimensional latent space to extract disentangled, interpretable features. 
 
-To avoid dead neurons (common in this architecture) we will add some of the complete reconstruction loss to the sparse one. This method is commonly used to avoid gradient inactivity. 
+To prevent inactive/dead neurons (a common issue in sparse architectures), a fraction $t$ of the dense reconstruction loss is added to the sparse loss:
 
 ```python
 loss = criterion(reconstructed_topk, images) + t * criterion(reconstructed_dense, images)
 ```
 
-
-#### Fixed parameters:
-
-The following configurations are mantained from the previous results as the SAE does not require changes and this parameters have shown to be optimal for this architecture.
+### Fixed Parameters
+The following configurations were retained from previous experiments:
 
 ```python
 {
     "act_function": nn.SiLU,
     "dropout_rate": 0.0,
-    "loss_function": SSIML1Loss(0.4),
+    "loss_function": SSIML1Loss(alpha=0.4),
     "epochs": 19
 }
 ```
 
-#### Latent Activation Function:
+### Latent Activation Function
+To enforce strict sparsity, `nn.ReLU` is used as the latent activation function, turning off negative activation values.
 
-In a SAE we need to force sparsity, this means turning off many of the avaliable neurons. Because of this, we need to use `nn.ReLU` as the latent activation function so the negative neurons get turned off.
+### Top-k Sparsity & Latent Dimension
+Sparsity is enforced using **Top-k + ReLU**. While L1 regularization was tested, it suppressed activations uniformly rather than forcing structured sparsity. Top-k provides precise control over feature selection and enforces strong sparsity.
 
+Top-k retains only the $k$ largest activation values per sample while setting the rest to zero. However, this approach can lead to **dead neurons** (neurons whose gradients remain zero).
 
-#### Top-k And Latent Dimension (Sparsity):
-There are many ways to force the sparsity in a AE, the more popular ones are:
-- L1 Reguralization
-- KL divergence
-- Top-K
-- ReLU/Jump ReLU
+- **Objective ($k$):** Keep $k$ as low as possible to force sparsity and feature disentanglement.
+- **Objective (Dimension):** Keep dimension high to extract fine-grained characteristics.
+- **Constraints:** Setting $k$ too low degrades reconstruction quality and drastically increases dead neurons if unaligned with the latent dimension. Higher dimensions reach a point of diminishing returns where features become overly abstract.
 
-For this project I have choosen Top-K + ReLU, I have tried L1 too but it didn't force a correct sparsity and tended to reduce all neurons at once. On the other hand Top-K offers a good control over the number of characteristics and creates great sparsity.
-
-
-Top-K work's by forcing only the k neurons with greater activation values to stay active. This method requires to use ReLU as negatives values can become ambiguous in both training and analysis. This approach only has a remarcable issue, <ins>**dead neurons**</ins>. Top-K turns off neurons, reducing their gradients to 0, which added to ReLU can cause heavy issues. It's very important to select appropiate values for both k and the latent dimension.
-
-Objectives:
-- K value: as low as posible, low k forces sparsity and disentanglement in the latent space.
-- Latent dimension: as high as posible, higher dimensions offer finer characteristics. 
-
-Limitations:
-- K value
-    - The lower it goes the lower the quality of the reconstruction
-    - If it's not consistent with the latent dimension it can explode the number of death neurons.
-- Latent dimension:
-    - There's a point from where more dimension doesn't mean a great impact in reconstruction quality (but it greatly reduces performance).
-
-To start discarding configurations a width spectrum test is started:
+#### Wide Spectrum Exploration
+Initial evaluation across broader latent dimensions ($1024$ – $4096$) and $k$ values ($16$ – $64$):
 
 <p align="center">
-    <img src="/images/sae/train_losses/train_losses_1024-4096.png" width="800">
-    <img src="/images/sae/losses_1024-4096.png" width="800">
+  <img src="images/sae/train_losses/train_losses_1024-4096.png" width="800" alt="Wide Training Loss">
+  <img src="images/sae/losses_1024-4096.png" width="800" alt="Wide Evaluation Loss">
 </p>
 
+**Key Observations:**
+- $k=16$ and dimension $4096$ can be safely discarded. The augmented MNIST dataset requires a minimum of 32–64 active features for accurate reconstruction.
+- Latent dimension $2048$ represents the peak of feature extraction efficiency. Increasing dimensions beyond this degraded performance because features became too fine-grained, increasing the required number of active neurons per sample.
 
-With this results it is obvious that k=16 and dim=4096 can be easily descarded. We can extract some early conclusions from this results, it appears that the MNIST dataset (with our custom transform applied) need a minimun of 32-64 individual characteristics to be correctly reconstructed. It also appears that dim=2048 hits the peak of feature extracting, adding more dimensions have shown not only to not increase the quality but worse it. This can happen for many reasons but the main one is that the features become such fine and abstract that the number of neurons needed to reconstruct a digit explodes.
-
-Then, some more specific tests are run to explore the greatest configurations:
+#### Refined Experiments
+Focused sweeps on the most promising parameter ranges ($1024$ – $2048$):
 
 <p align="center">
-    <img src="/images/sae/train_losses/train_losses_1024-2048.png" width="800">
-    <img src="/images/sae/losses_1024-2048.png" width="800">
-    <img src="/images/sae/dead_neurons/dead_neurons_k=32.png" width="410">
-    <img src="/images/sae/dead_neurons/dead_neurons_k=64.png" width="410">
+  <img src="images/sae/train_losses/train_losses_1024-2048.png" width="800" alt="Refined Training Loss">
+  <img src="images/sae/losses_1024-2048.png" width="800" alt="Refined Evaluation Loss">
 </p>
 
-A normal dead neurons rate it's between 4-6% in SAE architectures, the only architecture which mantains a low error and keeps the dead neurons count low is the combination `{k=32, dim=1024}`.
+<p align="center">
+  <img src="images/sae/dead_neurons/dead_neurons_k=32.png" width="410" alt="Dead Neurons k=32">
+  <img src="images/sae/dead_neurons/dead_neurons_k=64.png" width="410" alt="Dead Neurons k=64">
+</p>
 
-#### Dead Neurons:
-As said at the start of the section, to control the dead neuron count a fraction of the normal reconstruction loss is added to the sparse one. This adding is controled by a parammeter `t` which default value has been `t=0.15`. A test to itter the `0.05`, `0.1`,  `0.2` values will be run to study the optimal value.
+A typical dead neuron rate in SAEs ranges between 4–6%. The combination `{k=32, latent_dim=1024}` achieved low reconstruction loss while keeping dead neuron counts within acceptable limits.
+
+### Dead Neurons & Auxiliary Loss Weight ($t$)
+To control the dead neuron rate, different values for parameter $t \in [0.05, 0.10, 0.15, 0.20]$ were evaluated:
 
 <p align="center">
   <b>t = 0.05</b><br>
-  <img src="/images/sae/dead_neurons/0.05-dead-neurons.png" width="600">
+  <img src="images/sae/dead_neurons/0.05-dead-neurons.png" width="600" alt="Dead Neurons t=0.05">
 </p>
 
 <p align="center">
   <b>t = 0.10</b><br>
-  <img src="/images/sae/dead_neurons/0.1-dead-neurons.png" width="600">
+  <img src="images/sae/dead_neurons/0.1-dead-neurons.png" width="600" alt="Dead Neurons t=0.10">
 </p>
 
 <p align="center">
   <b>t = 0.15</b><br>
-  <img src="/images/sae/dead_neurons/0.15-dead-neurons.png" width="600">
+  <img src="images/sae/dead_neurons/0.15-dead-neurons.png" width="600" alt="Dead Neurons t=0.15">
 </p>
 
 <p align="center">
   <b>t = 0.20</b><br>
-  <img src="/images/sae/dead_neurons/0.2-dead-neurons.png" width="600">
+  <img src="images/sae/dead_neurons/0.2-dead-neurons.png" width="600" alt="Dead Neurons t=0.20">
 </p>
 
+`t = 0.15` maintained the optimal balance between dead neuron mitigation (3–6%) and reconstruction accuracy. Values of $t \ge 0.20$ reduced dead neurons further but noticeably degraded reconstruction quality.
 
-Its easy to see that `t=0.15` is mantained as the best relation between dead neurons and model performance. It offers good reconstruction value with a normal dead neuron rate (3-6%). `t>=0.2` offers a better dead neuron rate, but in exchange of too much reconstruction quality.
-
-#### Optimal Configuration:
+### Optimal Configuration
 
 ```python
 {
@@ -216,31 +207,26 @@ Its easy to see that `t=0.15` is mantained as the best relation between dead neu
     "latent_act_function": nn.ReLU,
     "dropout_rate": 0.0,
     "latent_dim": 1024,
-    "loss_function": SSIML1Loss(0.4),
+    "loss_function": SSIML1Loss(alpha=0.4),
     "k": 32,
     "epochs": 19
 }
 ```
 
-Reconstructed images using the optimal configuration:
+#### Reconstruction Results
+Reconstructed images generated by the optimal SAE setup:
 
 <p align="center">
-    <img src="/images/sae/reconstructed.png" width="800">
+  <img src="images/sae/reconstructed.png" width="800" alt="SAE Reconstructed Images">
 </p>
 
-UMAP proyection of the latent space:
+#### Latent Space Projections
+The latent space was evaluated using two UMAP distance metrics:
 
-Here, two perspectives of the UMAP proyection are needed:
-- Eucledian distance (more sparse):
-
-Usually in UMAP the euclidean distance is used, however the less dimensions two vectors share the further they are represented from eachother. This can be usefull to apreciate subgroups with different characteristics and digits inside them. Even do, it can make quite difficult to differenciate similar concepts like digits and make the seem uncorrelated.
-- Cosine distance (more compact):
-
-Cosine distance isn't sensible to sparsity, this means it can differenciate each general concept easily from the rest, even if they contain many different subgroups of characteristics.
-
-
+- **Euclidean Distance (Sparse):** Sensitive to zero activations. Vectors sharing fewer active dimensions are projected farther apart, making it effective for identifying specific sub-clusters and stylistic variations within digits.
+- **Cosine Distance (Compact):** Less sensitive to sparsity. Focuses on overall structural orientation, making high-level digit concepts easily separable despite intra-class feature variations.
 
 <p align="center">
-    <img src="/images/sae/umap/umap_cosine.png" width="500">
-    <img src="/images/sae/umap/umap_eucl.png" width="500">
+  <img src="images/sae/umap/umap_cosine.png" width="49%" alt="UMAP Cosine Metric">
+  <img src="images/sae/umap/umap_eucl.png" width="49%" alt="UMAP Euclidean Metric">
 </p>
