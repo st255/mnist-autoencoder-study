@@ -206,3 +206,41 @@ As said at the start of the section, to control the dead neuron count a fraction
 
 
 Its easy to see that `t=0.15` is mantained as the best relation between dead neurons and model performance. It offers good reconstruction value with a normal dead neuron rate (3-6%). `t>=0.2` offers a better dead neuron rate, but in exchange of too much reconstruction quality.
+
+#### Optimal Configuration:
+
+```python
+{
+    "id": "k=32,dim=1024",
+    "act_function": nn.SiLU,
+    "latent_act_function": nn.ReLU,
+    "dropout_rate": 0.0,
+    "latent_dim": 1024,
+    "loss_function": SSIML1Loss(0.4),
+    "k": 32,
+    "epochs": 19
+}
+```
+
+Reconstructed images using the optimal configuration:
+
+<p align="center">
+    <img src="/images/sae/reconstructed.png" width="800">
+</p>
+
+UMAP proyection of the latent space:
+
+Here, two perspectives of the UMAP proyection are needed:
+- Eucledian distance (more sparse):
+
+Usually in UMAP the euclidean distance is used, however the less dimensions two vectors share the further they are represented from eachother. This can be usefull to apreciate subgroups with different characteristics and digits inside them. Even do, it can make quite difficult to differenciate similar concepts like digits and make the seem uncorrelated.
+- Cosine distance (more compact):
+
+Cosine distance isn't sensible to sparsity, this means it can differenciate each general concept easily from the rest, even if they contain many different subgroups of characteristics.
+
+
+
+<p align="center">
+    <img src="/images/sae/umap/umap_cosine.png" width="500">
+    <img src="/images/sae/umap/umap_eucl.png" width="500">
+</p>
